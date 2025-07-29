@@ -100,6 +100,30 @@ class TestEnhancedLexEvent(unittest.TestCase):
                                 "interpretedValue": "London",
                                 "resolvedValues": ["London", "Greater London"]
                             }
+                        },
+                        "Toppings": {
+                            "shape": "List",
+                            "value": {
+                                "originalValue": "pepperoni and cheese",
+                                "interpretedValue": "pepperoni and cheese",
+                                "resolvedValues": ["pepperoni and cheese"]
+                            },
+                            "values": [
+                                {
+                                    "value": {
+                                        "originalValue": "pepperoni",
+                                        "interpretedValue": "pepperoni",
+                                        "resolvedValues": ["pepperoni"]
+                                    }
+                                },
+                                {
+                                    "value": {
+                                        "originalValue": "cheese",
+                                        "interpretedValue": "cheese",
+                                        "resolvedValues": ["cheese"]
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
@@ -200,10 +224,12 @@ class TestEnhancedLexEvent(unittest.TestCase):
     
     def test_is_low_confidence_intent(self):
         """Test low confidence detection."""
-        # With confidence 0.85, should not be low confidence
+        # With confidence 0.85, should not be low confidence with default threshold (0.4)
         self.assertFalse(self.lex_event.is_low_confidence_intent())
-        self.assertFalse(self.lex_event.is_low_confidence_intent(0.9))  # Higher threshold
-        self.assertTrue(self.lex_event.is_low_confidence_intent(0.8))   # Lower threshold
+        # With confidence 0.85 and threshold 0.9, should be low confidence
+        self.assertTrue(self.lex_event.is_low_confidence_intent(0.9))   # Higher threshold
+        # With confidence 0.85 and threshold 0.8, should not be low confidence  
+        self.assertFalse(self.lex_event.is_low_confidence_intent(0.8))   # Lower threshold
     
     def test_input_mode_checks(self):
         """Test input mode detection methods."""
